@@ -1,0 +1,110 @@
+<div id="loader" *ngIf="isLoader">
+  <mat-spinner></mat-spinner>
+</div>
+<section id="employee" style="padding: 20px 0px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <h3>CRUD Operations & Pagination with Filter</h3>
+            </div>
+            <div class="col-4">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button class="btn btn-sm btn-danger" (click)="clearAllRecords()" type="button">Clear All Reacord</button>
+                    <button class="btn btn-sm btn-success" (click)="openModal()" type="button">Add New Employee</button>
+                </div>
+            </div>
+            <div class="col-12">
+                <input [(ngModel)]="searchText" placeholder="Search for records">
+                <table class="table table-sm table-responsive">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Employee Id</th>
+                            <th scope="col">Employee Name</th>
+                            <th scope="col">Employee Email</th>
+                            <th scope="col">Employee Salary</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let emp of employeeList | paginate: config | searchPipe:searchText; trackBy:trackByEmpName; let i = index;">
+                            <td scope="row">{{ config.itemsPerPage * (config.currentPage - 1) + i + 1 }}</td>
+                            <td>{{emp.empName}}</td>
+                            <td>{{emp.empEmail}}</td>
+                            <td>{{emp.empSalary}}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-primary" (click)="editEmp(config.itemsPerPage * (config.currentPage - 1) + i)">Edit</button>
+                                <button type="button" class="btn btn-sm btn-danger" (click)="removeEmp(config.itemsPerPage * (config.currentPage - 1) + i)">Delete</button>
+                            </td>
+                        </tr>
+    
+                    </tbody>
+                </table>
+                <pagination-controls (pageChange)="pageChange($event)"></pagination-controls>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #empModal let-modal>
+       <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{editMode ? 'Update Employee':'Addnew employee'}}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <form [formGroup]="employeeForm" (ngSubmit)="submitEmpForm()">
+    <div class="modal-body">
+        <div class="form-group">
+          <label for="empName">Employee Name</label>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Enter employee name.." formControlName="empName" [ngClass]="{ 'is-invalid': submitted && f.empName.errors }" />
+            <div *ngIf="submitted && f.empName.errors" class="invalid-feedback">
+                <div *ngIf="f.empName.errors.required">Employee Name is required</div>
+                <div *ngIf="f.empName.errors.pattern">Only Alphanumeric with whitspace is allowed</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="empEmail">Employee Email</label>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Enter employee email.." formControlName="empEmail" [ngClass]="{ 'is-invalid': submitted && f.empEmail.errors }" />
+            <div *ngIf="submitted && f.empEmail.errors" class="invalid-feedback">
+                <div *ngIf="f.empEmail.errors.required">Email is required</div>
+                <div *ngIf="f.empEmail.errors.pattern">Enter valid email address</div>
+               
+            </div>
+           
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="empSalary">Employee Salary</label>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Enter employee salary.." formControlName="empSalary" [ngClass]="{ 'is-invalid': submitted && f.empSalary.errors }" />
+            <div *ngIf="submitted && f.empSalary.errors" class="invalid-feedback">
+                <div *ngIf="f.empSalary.errors.required">Employee Salary is required</div>
+                <div *ngIf="f.empSalary.errors.pattern">Only numbers are allowed</div>
+            </div>
+          </div>
+        </div>
+       
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-outline-dark">{{editMode ? 'Update':'Save'}}</button>
+    </div>
+  </form>
+      </ng-template>  
+</section>
+
+<section id="info" style="padding: 0px 0px 10px 0px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                      <h5>Please run npm install beforn running angular application</h5>
+                      <p style="color: red;">initially i am adding some dummy records in storage</p>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+</section>
